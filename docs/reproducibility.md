@@ -20,6 +20,13 @@ inputs are present under `data/`. The DLBCL cohort 1 external validation files
 are intentionally not tracked in GitHub because of file size and/or data
 redistribution constraints.
 
+The DLBCL workflow has been refactored so the selected feature count, selected
+genes, and final Random Forest model are explicit. The corrected rerun selected
+100 genes for `final_rf_model` and replaced earlier ambiguous-model external
+validation metrics. The corrected result should be interpreted as high
+threshold-independent ranking performance with weak default-threshold
+classification performance.
+
 ## Required R Packages
 
 The transcriptomics R Markdown notebook
@@ -200,6 +207,13 @@ download path.
   are unknown.
 * The DLBCL cohort 1 external validation files are local-only because of file
   size and/or data redistribution constraints.
+* The corrected DLBCL final model has high external-validation AUC but poor
+  default-threshold balanced accuracy and sensitivity, so the model should be
+  interpreted as a learning-focused workflow rather than a validated classifier.
+* The archived zipped transcriptomics HTML report may predate the corrected
+  DLBCL final-model refactor. A full report render was attempted but failed when
+  loading the `NMF` package for the ESCC section, so the R Markdown source and
+  README should be treated as the current corrected references.
 * Package versions are not pinned.
 * The transcriptomics workflow installs some packages inside the notebook, which
   makes reruns slower and less controlled.
@@ -234,6 +248,7 @@ Current reproducibility score: 7 out of 10.
 
 The project now has clearer data organization, relative notebook paths, included
 core/supplementary input files, and documentation for local-only external
-validation files. It is still not fully reproducible because cohort 1 external
-validation requires manual authorized data placement, dataset provenance is
-incomplete, and package environments are not pinned.
+validation files. The DLBCL final model definition is now explicit, which
+improves scientific rigor. It is still not fully reproducible because cohort 1
+external validation requires manual authorized data placement, dataset
+provenance is incomplete, and package environments are not pinned.

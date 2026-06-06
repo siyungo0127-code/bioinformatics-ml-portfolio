@@ -53,7 +53,7 @@ plot(roc.test)
 ```
 
 The optimal mtry value was 192, which gave the lowest OOB error during tuning (~1.99%). The final model had an OOB error of 4.38%. From the confusion matrix, the type 1 error was 7.02% and the type 2 error was 2.19%. This shows the model performs slightly better for GCB than ABC. The sensitivity was 0.9623 and specificity was 1.0000, with a balanced accuracy of 0.9811. 
-The ROC curve shows an AUC close to 1, indicating very strong classification performance.
+The internal train/test ROC curve shows an AUC close to 1 for this initial model, but external validation of the explicitly selected final model should be interpreted separately.
 
 # 2. Select the 1000 most important features in the model and use these to recreate the model - Report the error of this model in the training and testing cohort(OOB, type 1, type 2 errors & ROC). Discuss whether it performs better or worse than the previous model.
 
@@ -74,21 +74,37 @@ The model performs better with fewer features, suggesting that removing less inf
 
 ```{R}
 feature_sizes <- c(1000, 500, 200, 100, 50, 20)
-results <- data.frame()
+feature_selection_models <- list()
+results <- data.frame(n = integer(), accuracy = numeric())
+set.seed(123)
 for (n in feature_sizes) {
   genes <- rownames(imp %>% arrange(-MeanDecreaseGini))[1:n]
   train.sub <- train.rf[, c("COO", genes)]
   test.sub <- test.rf[, c("COO", genes)]
-  model <- randomForest(train.sub[,-1], train.sub$COO,
+  feature_selection_models[[as.character(n)]] <- randomForest(
+                        train.sub[,-1], train.sub$COO,
                         ntree=150, mtry=sqrt(n))
-  test.pred <- predict(model, test.sub)
+  test.pred <- predict(feature_selection_models[[as.character(n)]], test.sub)
   cm <- confusionMatrix(test.pred, test.sub$COO)
   acc <- cm$overall["Accuracy"]
   results <- rbind(results, data.frame(n=n, accuracy=acc))}
+max_accuracy <- max(results$accuracy)
+selected_feature_count <- min(results$n[results$accuracy == max_accuracy])
+selected_genes <- rownames(imp %>% arrange(-MeanDecreaseGini))[1:selected_feature_count]
+final_train <- train.rf[, c("COO", selected_genes)]
+final_test <- test.rf[, c("COO", selected_genes)]
+set.seed(123)
+final_rf_model <- randomForest(final_train[,-1], final_train$COO,
+                               ntree=150,
+                               mtry=sqrt(selected_feature_count))
+final_test_pred <- predict(final_rf_model, final_test)
+final_test_cm <- confusionMatrix(final_test_pred, final_test$COO)
 results
+selected_feature_count
+final_test_cm
 ```
 
-The highest accuracy (0.9899) was observed at both 200 and 50 genes.50 genes were selected as the optimal number to reduce model complexity while maintaining accuracy.When fewer than 50 genes were used, accuracy went down, which means using too few genes can remove important information.
+In the earlier rendered report, the highest internal test accuracy was reported as a tie between 200 and 50 genes, and the text selected 50 genes. After refactoring the workflow with explicit model storage and random seeds, the corrected rerun found the highest internal test accuracy at 500 and 100 genes. Because 100 genes achieved the same internal test accuracy with lower model complexity, `selected_feature_count` was set to 100 and `selected_genes` contains the top 100 genes ranked by Random Forest feature importance. The final model used for downstream validation was explicitly rebuilt as `final_rf_model` using these 100 selected genes.
 
 # 4. Using your final optimum model, predict the cell of origin in Cohort 1 (the cohort used in the practical). Report the type 1 and type 2 errors and aROC curve in this validation cohort. Discuss whether this model works within this validation cohort and explain your reasoning.
 
@@ -99,20 +115,17 @@ cohort1 <- Biobase::combine(
   readRDS("data/dlbcl/cohort_1/DLBCL.eSet.3.rds"),
   readRDS("data/dlbcl/cohort_1/DLBCL.eSet.4.rds"))
 
-final.genes <- rownames(imp %>% arrange(-MeanDecreaseGini))[1:100]
 cohort1.rf <- cbind(COO=as.factor(cohort1$COO),
                     t(exprs(cohort1)) %>% as.data.frame())
-cohort1.sub <- cohort1.rf[, c("COO", final.genes)]
+cohort1.sub <- cohort1.rf[, c("COO", selected_genes)]
 
-pred <- predict(model, cohort1.sub)
+pred <- predict(final_rf_model, cohort1.sub)
 confusionMatrix(pred, cohort1.sub$COO)
-prob <- predict(model, cohort1.sub, type="prob")
+prob <- predict(final_rf_model, cohort1.sub, type="prob")
 roc.val <- roc(cohort1.sub$COO, prob[,2])
 plot(roc.val)
 ```
-The sensitivity of this model was 0.8941 and specificity was 0.7974, with a balanced accuracy of 0.8458. Compared to the training and testing results, the performance decreased, indicating that the model does not generalise perfectly to independent data. 
-The ROC curve shows an AUC of approximately 0.88–0.90, suggesting that the model still has good predictive ability. 
-The model performs reasonably well in the validation cohort, but the drop in performance suggests some overfitting during training.
+This corrected workflow uses the explicitly rebuilt `final_rf_model` and the same 100 selected genes identified during feature selection. The previous notebook text reported accuracy of 0.8283, sensitivity of 0.8941, specificity of 0.7974, balanced accuracy of 0.8458, and AUC of approximately 0.88–0.90, but those values came from an ambiguous model object. After rerunning the corrected workflow with the explicit 100-gene `final_rf_model`, the external validation accuracy was 0.6805, balanced accuracy was 0.5021, sensitivity was 0.0078, specificity was 0.9963, and AUC was 0.9326. This indicates that the corrected model ranks samples well by probability but performs poorly at the default class decision threshold.
 
 
 
@@ -296,6 +309,3 @@ The biological differences identified by NMF are likely more meaningful.
 # 6. Can you suggest the most appropriate procedure for any unsupervised clustering analysis of a given dataset? How to generate the most robust, reliable clusters?
 
 Unsupervised clustering shouldn’t depend on just one method. It’s better to first select variable genes to reduce noise. Then try different clustering methods and different numbers of clusters. The main point is to choose clusters that are stable, not just based on one result. After that, check if the clusters make biological sense using methods like differential expression or GSEA. Robust clustering means the results are consistent and easy to interpret biologically. 
-
-
-

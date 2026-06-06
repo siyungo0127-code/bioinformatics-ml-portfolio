@@ -7,7 +7,7 @@ This project contains two major analyses:
 1. DLBCL Cell-of-Origin classification using Random Forest
 2. ESCC molecular subtype discovery using unsupervised clustering
 
-The objective is to apply machine learning and transcriptomic analysis methods to understand cancer heterogeneity and identify biologically meaningful patterns.
+The objective is to apply machine learning and transcriptomic analysis methods to understand cancer heterogeneity, evaluate model behavior honestly, and identify biologically meaningful patterns.
 
 ---
 
@@ -52,7 +52,7 @@ Training/Test Split:
 
 ### Purpose
 
-Build a classifier capable of predicting COO subtype.
+Build a Random Forest model for COO subtype prediction and evaluate how it behaves under both probability-ranking and default-threshold classification metrics.
 
 ### Why Random Forest?
 
@@ -78,7 +78,7 @@ Find model settings that minimize Out-of-Bag (OOB) error.
 
 ### Why?
 
-Better hyperparameters improve prediction accuracy and generalizability.
+Better hyperparameters can improve model behavior, but final performance still needs to be assessed on held-out and external data.
 
 ---
 
@@ -108,16 +108,18 @@ Reducing feature count:
 * OOB Error
 * ROC Curve
 * AUC
+* Accuracy
+* Balanced Accuracy
+* Sensitivity
+* Specificity
 
 ### Why?
 
-These metrics measure how well the model separates different COO subtypes.
+These metrics measure different parts of model behavior.
 
-A strong classifier should have:
+ROC/AUC evaluates threshold-independent probability ranking. Accuracy, balanced accuracy, sensitivity, and specificity depend on a chosen class decision threshold. A model can have high AUC but poor default-threshold classification performance, so both views should be reported.
 
-* Low OOB error
-* High AUC
-* Consistent performance on validation data
+The corrected DLBCL workflow showed this distinction clearly: external-validation AUC was high, but default-threshold balanced accuracy and sensitivity were poor.
 
 ---
 
@@ -125,13 +127,13 @@ A strong classifier should have:
 
 ### Purpose
 
-Test the trained model on an external cohort.
+Test the trained model on an external cohort without tuning decisions on that cohort.
 
 ### Why?
 
-A useful biological classifier must generalize to unseen samples.
+A useful biological model should generalize to unseen samples and should be evaluated with metrics that match the intended use.
 
-External validation is one of the strongest indicators of model robustness.
+External validation is important for assessing model robustness, but it should not be overinterpreted when threshold-dependent performance is poor.
 
 ---
 

@@ -8,11 +8,11 @@ Gene Expression-Based Cancer Subtype Classification and Transcriptomic Profiling
 
 ## Overview
 
-This project explores machine learning and transcriptomic analysis approaches for cancer subtype identification using gene expression data.
+This project explores machine learning and transcriptomic analysis approaches for cancer subtype analysis using gene expression data.
 
 The work consists of two complementary analyses:
 
-1. Building a Random Forest classifier to predict Diffuse Large B-Cell Lymphoma (DLBCL) Cell-of-Origin (COO) subtypes.
+1. Building and auditing a Random Forest workflow for Diffuse Large B-Cell Lymphoma (DLBCL) Cell-of-Origin (COO) prediction.
 2. Identifying molecular subtypes in Esophageal Squamous Cell Carcinoma (ESCC) using unsupervised clustering and pathway analysis.
 
 ---
@@ -21,14 +21,14 @@ The work consists of two complementary analyses:
 
 ### Part 1: Supervised Learning
 
-Develop a Random Forest model capable of classifying DLBCL samples into Cell-of-Origin (COO) subtypes using gene expression profiles.
+Develop a Random Forest workflow for DLBCL Cell-of-Origin (COO) prediction using gene expression profiles, then evaluate both threshold-independent ranking performance and threshold-dependent classification metrics.
 
 Key objectives:
 
-* Train and optimize a Random Forest classifier
+* Train and optimize a Random Forest model
 * Perform feature selection to identify informative genes
-* Evaluate model performance using OOB error and ROC analysis
-* Validate the model using an independent testing cohort
+* Evaluate model performance using OOB error, ROC/AUC analysis, and threshold-dependent metrics
+* Externally evaluate the model on an independent validation cohort
 
 ### Part 2: Unsupervised Learning
 
@@ -58,10 +58,10 @@ Expression matrices were used as input for both supervised and unsupervised anal
 
 ### Machine Learning
 
-* Random Forest Classification
+* Random Forest model development
 * Hyperparameter Tuning
 * Feature Selection
-* ROC Curve Analysis
+* ROC Curve and threshold-dependent metric analysis
 * Independent Cohort Validation
 
 ### Transcriptomic Analysis
@@ -100,10 +100,10 @@ Expression matrices were used as input for both supervised and unsupervised anal
 
 ### DLBCL Classification
 
-* Developed a Random Forest classifier for COO prediction
+* Developed an explicit 100-gene Random Forest workflow for COO prediction
 * Performed iterative feature selection to reduce dimensionality
-* Evaluated predictive performance using ROC and OOB metrics
-* Assessed model generalizability on an external validation cohort
+* Evaluated predictive performance using OOB metrics, ROC/AUC, accuracy, balanced accuracy, sensitivity, and specificity
+* Identified a scientifically important distinction: the corrected external validation showed high AUC but poor default-threshold classification performance
 
 ### ESCC Subtyping
 

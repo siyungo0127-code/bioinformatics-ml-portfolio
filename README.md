@@ -2,7 +2,7 @@
 
 This repository presents an MSc bioinformatics portfolio project focused on cancer transcriptomics, molecular subtyping, and interpretable machine learning. The main work combines supervised classification of Diffuse Large B-Cell Lymphoma (DLBCL) Cell-of-Origin subtypes with unsupervised molecular subtype discovery in Esophageal Squamous Cell Carcinoma (ESCC).
 
-The strongest result is a Random Forest model for DLBCL ABC vs GCB classification that maintained strong performance on an external validation cohort, achieving 0.8283 accuracy, 0.8458 balanced accuracy, and an AUC of approximately 0.88-0.90. A second major analysis identified four ESCC molecular subtypes from 90 transcriptomic samples using NMF, followed by differential expression and pathway-level interpretation.
+The DLBCL analysis develops a Random Forest workflow for ABC vs GCB Cell-of-Origin classification and evaluates it on an external validation cohort. After clarifying the final model definition, the explicit 100-gene final model achieved an external-validation AUC of 0.9326, showing strong probability ranking. However, threshold-dependent metrics were weak: 0.6805 accuracy, 0.5021 balanced accuracy, 0.0078 sensitivity, and 0.9963 specificity at the default class threshold. This distinction is central to the project: the workflow demonstrates transcriptomic machine-learning development and external validation, but it should not be interpreted as a clinically validated classifier. A second major analysis identified four ESCC molecular subtypes from 90 transcriptomic samples using NMF, followed by differential expression and pathway-level interpretation.
 
 This is a learning-focused MSc portfolio project, not clinical software. The goal is to demonstrate practical bioinformatics analysis, model validation, biological interpretation, and clear scientific communication using cancer gene expression data.
 
@@ -32,8 +32,9 @@ Biological Interpretation
 
 ## Highlights
 
-* Built and externally validated a Random Forest classifier for DLBCL ABC vs GCB Cell-of-Origin classification.
-* Achieved external validation performance of 0.8283 accuracy, 0.8458 balanced accuracy, and approximately 0.88-0.90 AUC.
+* Built and externally evaluated a Random Forest workflow for DLBCL ABC vs GCB Cell-of-Origin classification.
+* Clarified the final DLBCL model definition as an explicit 100-gene Random Forest model.
+* Interpreted corrected external validation results by separating threshold-independent ranking performance from threshold-dependent classification performance.
 * Identified four molecular subtypes in 90 ESCC samples using Non-negative Matrix Factorization (NMF) on the top 1500 MAD genes.
 * Interpreted ESCC subtype biology using limma differential expression analysis and GSEA pathway analysis.
 * Included a CNN image classification notebook as an optional supplementary machine learning exercise, with biological label interpretation treated cautiously.
@@ -44,7 +45,7 @@ Biological Interpretation
 
 | Analysis | Dataset / Task | Method | Main Result | Interpretation |
 | --- | --- | --- | --- | --- |
-| DLBCL Cell-of-Origin classification | ABC vs GCB classification from gene expression profiles | Random Forest with external validation | External validation accuracy 0.8283, balanced accuracy 0.8458, AUC approximately 0.88-0.90 | Demonstrates supervised transcriptomic classification with independent cohort validation |
+| DLBCL Cell-of-Origin classification | ABC vs GCB classification from gene expression profiles | Explicit 100-gene Random Forest with external validation | AUC 0.9326; default-threshold accuracy 0.6805 and balanced accuracy 0.5021 | Demonstrates supervised transcriptomic ML workflow development and the importance of reporting both ranking performance and threshold-dependent metrics |
 | ESCC molecular subtyping | 90 ESCC transcriptomic samples | NMF using top 1500 MAD genes | Four molecular subtypes identified | Subtypes were interpreted using limma differential expression and GSEA pathway analysis |
 | Supplementary CNN exercise | Image classification notebook | Convolutional Neural Network | Exploratory model-building exercise | Included for machine learning practice; biological label meaning is unclear and not treated as a main biological result |
 
@@ -54,7 +55,7 @@ Biological Interpretation
 
 ### 1. DLBCL Cell-of-Origin Classification
 
-The DLBCL analysis focuses on classifying ABC vs GCB Cell-of-Origin subtypes from gene expression data. A Random Forest classifier was trained and evaluated with particular attention to external validation, which is the key strength of this component.
+The DLBCL analysis focuses on developing and auditing a Random Forest workflow for ABC vs GCB Cell-of-Origin prediction from gene expression data. A final 100-gene model was externally evaluated, with results interpreted separately for probability ranking and default-threshold classification.
 
 Main workflow:
 
@@ -65,15 +66,19 @@ Main workflow:
 * ROC curve and AUC evaluation
 * Independent external cohort validation
 
-Verified external validation results:
+Corrected external validation results for the explicit 100-gene final model:
 
-* Accuracy: 0.8283
-* Balanced accuracy: 0.8458
-* AUC: approximately 0.88-0.90
+* AUC: 0.9326
+* Accuracy: 0.6805
+* Balanced accuracy: 0.5021
+* Sensitivity: 0.0078
+* Specificity: 0.9963
+
+The AUC measures threshold-independent ranking of samples by predicted probability. Accuracy, balanced accuracy, sensitivity, and specificity depend on the default class decision threshold. In this model, probability ranking was strong, but the default threshold predicted the ABC class poorly. These corrected results replace earlier ambiguous-model values reported before the final Random Forest model was explicitly rebuilt and named as `final_rf_model`.
 
 ![DLBCL external validation ROC](figures/dlbcl_external_validation_roc.png)
 
-*External validation ROC curve showing DLBCL classifier performance on an independent cohort.*
+*External validation ROC curve for the corrected explicit DLBCL final model, showing threshold-independent ranking performance on an independent cohort.*
 
 ### 2. ESCC Molecular Subtyping
 
@@ -112,7 +117,7 @@ The CNN notebook is included as an additional machine learning exercise. It demo
 * Molecular subtype discovery
 * Differential expression analysis with limma
 * Functional enrichment and pathway interpretation
-* Independent validation of transcriptomic classifiers
+* Independent validation of transcriptomic ML workflows
 
 ### Machine Learning and Statistics
 
@@ -205,7 +210,7 @@ redistribution permission has been confirmed.
 ## Limitations
 
 * This repository is an MSc portfolio project and should not be interpreted as a clinically validated diagnostic tool.
-* The DLBCL classifier shows promising external validation performance, but further validation across larger, prospectively collected, and platform-diverse cohorts would be required for clinical translation.
+* The corrected DLBCL final model shows high external-validation AUC but poor default-threshold balanced accuracy and sensitivity, so it should be treated as a learning-focused model evaluation rather than a clinically useful classifier.
 * The ESCC subtypes are transcriptomic patterns discovered from 90 samples; their biological and clinical relevance would need confirmation in independent cohorts.
 * Pathway interpretations are hypothesis-generating and depend on the quality of differential expression results, gene set annotations, and enrichment methodology.
 * The CNN image classification component is supplementary because the biological meaning of the labels is unclear.
@@ -240,4 +245,5 @@ Through this project, I gained experience in:
 * This is an MSc portfolio project.
 * Some data files may not be included due to access, licensing, file size, or redistribution constraints.
 * The DLBCL cohort 1 external validation files are documented but intentionally excluded from GitHub.
+* The archived zipped transcriptomics HTML report may predate the corrected explicit DLBCL final-model refactor. The notebook and README are the current references for corrected DLBCL metrics until the combined report is regenerated.
 * The repository prioritizes clear scientific communication and reproducible analysis documentation.
