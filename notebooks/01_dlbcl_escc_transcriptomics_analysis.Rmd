@@ -20,7 +20,7 @@ library(caret)
 library(pROC)
 library(tidyverse)
 
-cohort2 <- readRDS("/Users/emily/Desktop/For_LAQ1_required_data/DLBCL_cohort_2/DLBCL.cohort.2.rds")
+cohort2 <- readRDS("data/dlbcl/cohort_2/DLBCL.cohort.2.rds")
 set.seed(123)
 ind <- sample(1:2, ncol(cohort2), replace = TRUE, prob = c(0.7,0.3))
 train <- cohort2[,ind==1]
@@ -94,10 +94,10 @@ The highest accuracy (0.9899) was observed at both 200 and 50 genes.50 genes wer
 
 ```{R}
 cohort1 <- Biobase::combine(
-  readRDS("/Users/emily/Desktop/For_LAQ1_required_data/DLBCL_cohort_1/DLBCL.eSet.1.rds"),
-  readRDS("/Users/emily/Desktop/For_LAQ1_required_data/DLBCL_cohort_1/DLBCL.eSet.2.rds"),
-  readRDS("/Users/emily/Desktop/For_LAQ1_required_data/DLBCL_cohort_1/DLBCL.eSet.3.rds"),
-  readRDS("/Users/emily/Desktop/For_LAQ1_required_data/DLBCL_cohort_1/DLBCL.eSet.4.rds"))
+  readRDS("data/dlbcl/cohort_1/DLBCL.eSet.1.rds"),
+  readRDS("data/dlbcl/cohort_1/DLBCL.eSet.2.rds"),
+  readRDS("data/dlbcl/cohort_1/DLBCL.eSet.3.rds"),
+  readRDS("data/dlbcl/cohort_1/DLBCL.eSet.4.rds"))
 
 final.genes <- rownames(imp %>% arrange(-MeanDecreaseGini))[1:100]
 cohort1.rf <- cbind(COO=as.factor(cohort1$COO),
@@ -122,7 +122,7 @@ The model performs reasonably well in the validation cohort, but the drop in per
 # 1.Perform the unsupervised clustering analysis using non-negative matrix factorisation(NMF). Find the most appropriate number of clusters, and provide all the essential statistics and plots to support your cluster.
 ```{R}
 library(NMF)
-exp_data <- read.table("/Users/emily/Desktop/For_LAQ2_required_data/exp_data_ESCC_90samples.txt", header=TRUE, row.names=1)
+exp_data <- read.table("data/escc/exp_data_ESCC_90samples.txt", header=TRUE, row.names=1)
 mads <- apply(exp_data,1,mad)
 d_exp <- exp_data[rev(order(mads))[1:1500],]
 estim.r <- nmf(d_exp, 2:6, nrun=10, seed=123456)

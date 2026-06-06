@@ -37,3 +37,5 @@ Thumbs.db
 # Logs
 *.log
 
+# Local-only external validation data
+data/dlbcl/cohort_1/*.rds

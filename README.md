@@ -155,6 +155,8 @@ README.md
 docs/
   01_project_summary.md
   02_code_walkthrough.md
+  data_sources.md
+  reproducibility.md
 
 notebooks/
   01_dlbcl_escc_transcriptomics_analysis.Rmd
@@ -167,7 +169,37 @@ reports/
 figures/
 
 data/
+  dlbcl/
+    cohort_2/
+      DLBCL.cohort.2.rds
+    cohort_1/
+      README.md
+  escc/
+    exp_data_ESCC_90samples.txt
+  images/
+    A1.jpg
+    A2.jpg
+    B1.jpg
+    B2.jpg
+    C1.jpg
+    C2.jpg
+    D1.jpg
+    D2.jpg
 ```
+
+The structured `data/` paths above are the expected locations used by the
+notebooks. In this checkout, the folders are prepared for reproducible local
+execution, but the required analysis data files may be absent unless they have
+been added by an authorized user.
+
+The DLBCL cohort 1 external validation `.rds` files are not tracked in GitHub
+because of file size and/or data redistribution constraints. To rerun the
+external validation section, authorized users should manually place
+`DLBCL.eSet.1.rds`, `DLBCL.eSet.2.rds`, `DLBCL.eSet.3.rds`, and
+`DLBCL.eSet.4.rds` in `data/dlbcl/cohort_1/`.
+
+Git LFS is not recommended for these external validation files unless
+redistribution permission has been confirmed.
 
 ---
 
@@ -207,5 +239,6 @@ Through this project, I gained experience in:
 ## Repository Notes
 
 * This is an MSc portfolio project.
-* Data files may not be included due to access, licensing, or storage constraints.
+* Some data files may not be included due to access, licensing, file size, or redistribution constraints.
+* The DLBCL cohort 1 external validation files are documented but intentionally excluded from GitHub.
 * The repository prioritizes clear scientific communication and reproducible analysis documentation.
