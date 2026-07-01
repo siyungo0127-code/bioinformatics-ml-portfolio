@@ -1,5 +1,22 @@
 # Cancer Transcriptomics and Machine Learning Portfolio
 
+## Project Summary
+
+**Goal**
+
+Develop and externally validate machine learning workflows for cancer transcriptomic data analysis, including Random Forest classification for DLBCL Cell-of-Origin prediction and molecular subtype discovery in ESCC.
+
+**My contribution**
+
+This was an individual MSc portfolio project completed as part of my MSc in Cancer Genomics and Data Science. I independently:
+
+- Designed the complete analysis workflow
+- Developed and externally validated the Random Forest classifier
+- Performed NMF-based molecular subtyping
+- Conducted differential expression and GSEA analyses
+- Interpreted the biological findings
+- Wrote the analysis code and repository documentation
+
 This repository presents an MSc bioinformatics portfolio project focused on cancer transcriptomics, molecular subtyping, and interpretable machine learning. The main work combines supervised classification of Diffuse Large B-Cell Lymphoma (DLBCL) Cell-of-Origin subtypes with unsupervised molecular subtype discovery in Esophageal Squamous Cell Carcinoma (ESCC).
 
 The DLBCL analysis develops a Random Forest workflow for ABC vs GCB Cell-of-Origin classification and evaluates it on an external validation cohort. After clarifying the final model definition, the explicit 100-gene final model achieved an external-validation AUC of 0.9326, showing strong probability ranking. However, threshold-dependent metrics were weak: 0.6805 accuracy, 0.5021 balanced accuracy, 0.0078 sensitivity, and 0.9963 specificity at the default class threshold. This distinction is central to the project: the workflow demonstrates transcriptomic machine-learning development and external validation, but it should not be interpreted as a clinically validated classifier. A second major analysis identified four ESCC molecular subtypes from 90 transcriptomic samples using NMF, followed by differential expression and pathway-level interpretation.
